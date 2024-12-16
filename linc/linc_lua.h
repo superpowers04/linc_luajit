@@ -12,7 +12,6 @@ namespace linc {
 
     typedef ::cpp::Function < int(::cpp::Reference<lua_State>, ::String) > luaCallbackFN;
     // typedef ::cpp::Function < int(::cpp::Pointer<lua_State>, ::String) > luaCallbackFN;
-    typedef ::cpp::Function < int(String) > HxTraceFN;
 
     namespace lua {
 
@@ -42,14 +41,6 @@ namespace linc {
         extern ::String optstring(lua_State *L, int n, const char *d);
         extern ::String ltypename(lua_State *L, int idx);
         extern void error(lua_State *L, const char* fmt);
-
-    }
-
-    namespace helpers {
-
-        extern int setErrorHandler(lua_State *L);
-        extern void register_hxtrace_func(HxTraceFN fn);
-        extern void register_hxtrace_lib(lua_State* L);
 
     }
 
