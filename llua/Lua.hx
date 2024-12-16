@@ -512,12 +512,6 @@ extern class Lua {
 	@:native('linc::callbacks::remove_callback_function')
 	static function remove_callback_function(l:State, name:String) : Void;
 
-	@:native('linc::helpers::register_hxtrace_lib')
-	static function register_hxtrace_lib(l:State) : Void;
-
-	@:native('linc::helpers::register_hxtrace_func')
-	static function register_hxtrace_func(f:cpp.Callable<String->Int>) : Void;
-
 } //Lua
 
 
@@ -528,13 +522,6 @@ class Lua_helper {
 		// trace("\nLUA: " + s);
 		Lua_helper.trace(s);
 		return 0;
-
-	}
-
-	public static inline function register_hxtrace(l:State) : Void {
-
-		Lua.register_hxtrace_func(cpp.Callable.fromStaticFunction(print_function));
-		Lua.register_hxtrace_lib(l);
 
 	}
 
