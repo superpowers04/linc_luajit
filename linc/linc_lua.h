@@ -1,6 +1,6 @@
 #pragma once
 
-#include <hxcpp.h>
+#include "hxcpp.h"
 #include <hx/CFFI.h>
 
 #include <sstream>
