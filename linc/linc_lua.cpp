@@ -1,4 +1,4 @@
-#include <hxcpp.h>
+#include "hxcpp.h"
 #include <hx/CFFI.h>
 
 #include "./linc_lua.h"
@@ -175,93 +175,6 @@ namespace linc {
         }
 
     } //lual
-
-    namespace helpers {
-
-        static int onError(lua_State *L) {
-
-            const char *msg = lua_tostring(L, 1);
-
-            if (msg)
-                luaL_traceback(L, L, msg, 1);
-            else if (!lua_isnoneornil(L, 1)) {  /* is there an error object? */
-                if (!luaL_callmeta(L, 1, "__tostring"))  /* try its 'tostring' metamethod */
-                    lua_pushliteral(L, "(no error message)");
-            }
-
-            return 1;
-
-        }
-
-        int setErrorHandler(lua_State *L){
-
-            lua_pushcfunction(L, onError);
-            return 1;
-
-        }
-
-
-        // haxe trace function
-
-        static HxTraceFN print_fn = 0;
-        static int hx_trace(lua_State* L) {
-
-            std::stringstream buffer;
-            int n = lua_gettop(L);  /* number of arguments */
-
-            lua_getglobal(L,"tostring");
-
-            for ( int i = 1;  i <= n;  ++i ){
-                const char* s = NULL;
-                size_t      l = 0;
-
-                lua_pushvalue(L,-1);    /* function to be called */
-                lua_pushvalue(L,i); /* value to print */
-                lua_call(L,1,1);
-
-                s = lua_tolstring(L,-1, &l); /* get result */
-                if ( s == NULL ){
-                    return luaL_error(L,LUA_QL("tostring") " must return a string to " LUA_QL("print"));
-                }
-
-                if ( i>1 ){
-                    buffer << "\t";
-                }
-
-                buffer << s;
-
-                lua_pop(L,1);   /* pop result */
-            }
-
-            // std::cout << buffer.str(); // c++ out
-            print_fn(::String(buffer.str().c_str())); // hx out
-
-            return 0;
-
-        }
-
-        static const struct luaL_Reg printlib [] = {
-
-            {"print", hx_trace},
-            {NULL, NULL} /* end of array */
-
-        };
-
-        void register_hxtrace_func(HxTraceFN fn){
-
-            print_fn = fn;
-
-        }
-
-        void register_hxtrace_lib(lua_State* L){
-
-            lua_getglobal(L, "_G");
-            luaL_register(L, NULL, printlib);
-            lua_pop(L, 1);
-
-        }
-
-    } //helpers
 
     namespace callbacks {
 
